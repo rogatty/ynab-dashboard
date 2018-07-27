@@ -121,10 +121,8 @@ export default class TargetCategoryComponent extends Component {
         max: largestMaxRatio * budgetedRange
       },
       balance: {
-        callback: (value, index) => {
-          // Balance should never go below zero so there is no point in displaying negative ticks
-          // Remove the first (largest) tick, too
-          return value < 0 || index === 0 ? null : value;
+        callback: (value) => {
+          return value < 0 || value > (this.category.goal_target / 1000) ? null : value;
         },
         min: largestMinRatio * balanceRange,
         max: largestMaxRatio * balanceRange
