@@ -38,8 +38,8 @@ export default class TargetCategoryChartComponent extends Component {
         backgroundColor(value, realData) {
           if (realData) {
             return value < 0 ?
-              'red' : value < 5000 ?
-                'yellow' : 'green';
+              '#ff0000' : value < 5000 ?
+                '#ECA01A' : '#48CC00';
           } else {
             return 'grey';
           }
