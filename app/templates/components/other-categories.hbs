@@ -1,0 +1,14 @@
+<h2>Na co wydaliśmy w tym miesiącu</h2>
+<table>
+  <tr>
+    <td>Łącznie</td>
+    <td>{{money total}}</td>
+  </tr>
+{{#each categories as |category|}}
+  <tr>
+    <td>{{category.name}}</td>
+    {{! TODO make it red when overspent }}
+    <td>{{money category.activity}}</td>
+  </tr>
+{{/each}}
+</table>

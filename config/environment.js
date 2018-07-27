@@ -20,6 +20,10 @@ module.exports = function(environment) {
     APP: {
       // Here you can pass flags/options to your application instance
       // when it is created
+      ACCESS_TOKEN: process.env.ACCESS_TOKEN,
+      BUDGET_ID: process.env.BUDGET_ID,
+      CREDIT_CARD_CATEGORY_GROUP_ID: process.env.CREDIT_CARD_CATEGORY_GROUP_ID,
+      TARGET_CATEGORY_ID: process.env.TARGET_CATEGORY_ID
     }
   };
 
