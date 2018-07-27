@@ -21,8 +21,18 @@ export default class ApiService extends Service {
     const budgetDetail = budgetResponse.data.budget;
 
     this.model.targetCategory = budgetDetail.categories.find(category => category.id === this.targetCategoryId);
+    this.model.targetCategoryMonths = this.getTargetCategoryMonths(budgetDetail);
 
-    this.model.targetCategoryMonths = budgetDetail.months
+    this.setMonthBeforeTheFirst();
+
+    // Last month is the future one
+    this.model.targetCategoryMonths.pop();
+
+    this.model.otherCategories = this.getOtherCategories(budgetDetail);
+  }
+
+  getTargetCategoryMonths(budgetDetail) {
+    return budgetDetail.months
       .map((month) => {
         return {
           month: month.month,
@@ -36,11 +46,23 @@ export default class ApiService extends Service {
         return typeof month.category !== 'undefined' && month.category.balance > 0;
       })
       .reverse();
+  }
 
-    // Last month is the future one
-    this.model.targetCategoryMonths.pop();
+  setMonthBeforeTheFirst() {
+    const monthBeforeTheFirst = new Date(this.model.targetCategoryMonths[0].month);
+    monthBeforeTheFirst.setMonth(monthBeforeTheFirst.getMonth() - 1);
 
-    this.model.otherCategories = budgetDetail.categories.filter(
+    this.model.targetCategoryMonths.unshift({
+      month: monthBeforeTheFirst.toISOString().slice(0, 7),
+      category: {
+        balance: 0,
+        budgeted: 0
+      }
+    });
+  }
+
+  getOtherCategories(budgetDetail) {
+    return budgetDetail.categories.filter(
       category => category.id !== this.targetCategoryId &&
         category.activity < 0 &&
         category.category_group_id !== this.creditCardCategoryGroupId &&

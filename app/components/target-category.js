@@ -9,12 +9,12 @@ export default class TargetCategoryComponent extends Component {
   @readOnly('model.targetCategory') category;
   @readOnly('model.targetCategoryMonths') months;
 
-  @computed('model.targetCategoryMonths')
+  @computed('months')
   get chartData() {
     return {
       datasets: [{
         borderColor: 'black',
-        data: this.model.targetCategoryMonths.map(categoryMonth => {
+        data: this.months.map(categoryMonth => {
           return Math.floor(categoryMonth.category.balance / 1000);
         }),
         fill: false,
@@ -27,13 +27,13 @@ export default class TargetCategoryComponent extends Component {
             'red' : value < 5000 ?
               'yellow' : 'green';
         },
-        data: this.model.targetCategoryMonths.map(categoryMonth => {
+        data: this.months.map(categoryMonth => {
           return Math.floor(categoryMonth.category.budgeted / 1000);
         }),
         label: this.budgetedLabel,
         yAxisID: 'budgeted'
       }],
-      labels: this.model.targetCategoryMonths.map(categoryMonth => categoryMonth.month)
+      labels: this.months.map(categoryMonth => categoryMonth.month)
     };
   }
 
@@ -77,7 +77,7 @@ export default class TargetCategoryComponent extends Component {
   // Align zeros on axes
   // @see https://stackoverflow.com/a/50334411/1050577
   getTicks() {
-    const budgeted = this.model.targetCategoryMonths.map(categoryMonth => categoryMonth.category.budgeted);
+    const budgeted = this.months.map(categoryMonth => categoryMonth.category.budgeted);
     const budgetedMinValue = Math.floor(Math.min(...budgeted) / 1000);
     const budgetedMaxValue = Math.floor(Math.max(...budgeted) / 1000);
     const budgetedRange = budgetedMaxValue - budgetedMinValue;
@@ -85,7 +85,7 @@ export default class TargetCategoryComponent extends Component {
     const budgetedMaxRatio = budgetedMaxValue / budgetedRange;
 
     const balanceMinValue = 0;
-    const balanceMaxValue = this.model.targetCategory.goal_target / 1000;
+    const balanceMaxValue = this.category.goal_target / 1000;
     const balanceRange = balanceMaxValue - balanceMinValue;
     const balanceMinRatio = balanceMinValue / balanceRange;
     const balanceMaxRatio = balanceMaxValue / balanceRange;
