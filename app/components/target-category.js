@@ -7,7 +7,18 @@ export default class TargetCategoryComponent extends Component {
   budgetedLabel = 'Odłożone';
 
   @readOnly('model.targetCategory') category;
-  @readOnly('model.targetCategoryMonths') months;
+
+  @computed('model.targetCategoryMonths')
+  get months() {
+    const months = this.model.targetCategoryMonths;
+
+    // Last month is a future one
+    months.pop();
+    this.addMonthBeforeTheFirst(months);
+    this.addForecast(months);
+
+    return months;
+  }
 
   @computed('months')
   get chartData() {
@@ -22,13 +33,17 @@ export default class TargetCategoryComponent extends Component {
         type: 'line',
         yAxisID: 'balance'
       }, {
-        backgroundColor(value) {
-          return value < 0 ?
-            'red' : value < 5000 ?
-              'yellow' : 'green';
+        backgroundColor(value, realData) {
+          if (realData) {
+            return value < 0 ?
+              'red' : value < 5000 ?
+                'yellow' : 'green';
+          } else {
+            return 'grey';
+          }
         },
         data: this.months.map(categoryMonth => {
-          return Math.floor(categoryMonth.category.budgeted / 1000);
+          return Math.floor((categoryMonth.category.budgeted + categoryMonth.category.activity) / 1000);
         }),
         label: this.budgetedLabel,
         yAxisID: 'budgeted'
@@ -77,15 +92,18 @@ export default class TargetCategoryComponent extends Component {
   // Align zeros on axes
   // @see https://stackoverflow.com/a/50334411/1050577
   getTicks() {
-    const budgeted = this.months.map(categoryMonth => categoryMonth.category.budgeted);
+    const budgeted = this.months.map(
+      categoryMonth => (categoryMonth.category.budgeted + categoryMonth.category.activity)
+    );
     const budgetedMinValue = Math.floor(Math.min(...budgeted) / 1000);
     const budgetedMaxValue = Math.floor(Math.max(...budgeted) / 1000);
     const budgetedRange = budgetedMaxValue - budgetedMinValue;
     const budgetedMinRatio = budgetedMinValue / budgetedRange;
     const budgetedMaxRatio = budgetedMaxValue / budgetedRange;
 
+    const balance = this.months.map(categoryMonth => categoryMonth.category.balance);
     const balanceMinValue = 0;
-    const balanceMaxValue = this.category.goal_target / 1000;
+    const balanceMaxValue = Math.floor(Math.max(...balance) / 1000);
     const balanceRange = balanceMaxValue - balanceMinValue;
     const balanceMinRatio = balanceMinValue / balanceRange;
     const balanceMaxRatio = balanceMaxValue / balanceRange;
@@ -103,13 +121,59 @@ export default class TargetCategoryComponent extends Component {
         max: largestMaxRatio * budgetedRange
       },
       balance: {
-        callback: (value) => {
-          // Balance should never go below zero!
-          return value < 0 ? null : value;
+        callback: (value, index) => {
+          // Balance should never go below zero so there is no point in displaying negative ticks
+          // Remove the first (largest) tick, too
+          return value < 0 || index === 0 ? null : value;
         },
         min: largestMinRatio * balanceRange,
         max: largestMaxRatio * balanceRange
       }
     };
+  }
+
+  addMonthBeforeTheFirst(months) {
+    const monthBeforeTheFirst = this.getMonthWithOffset(months[0].month, -1);
+
+    months.unshift({
+      month: monthBeforeTheFirst,
+      category: {
+        activity: 0,
+        balance: 0,
+        budgeted: 0
+      }
+    });
+  }
+
+  addForecast(months) {
+    const forecastPerMonth = Math.floor(
+      months
+        .slice(-3)
+        .reduce((sum, currentMonth) => (currentMonth.category.budgeted + currentMonth.category.activity) + sum, 0) / 3
+    );
+
+    let lastMonth = months.slice(-1)[0];
+    let balance = lastMonth.category.balance;
+
+    while (balance < this.category.goal_target) {
+      const forecastedMonth = {
+        month: `?${this.getMonthWithOffset(lastMonth.month, 1)}?`,
+        category: {
+          activity: 0,
+          balance: lastMonth.category.balance + forecastPerMonth,
+          budgeted: forecastPerMonth
+        }
+      };
+
+      months.push(forecastedMonth);
+      lastMonth = forecastedMonth;
+      balance += forecastPerMonth;
+    }
+  }
+
+  getMonthWithOffset(originalMonth, offset) {
+    const month = new Date(originalMonth);
+    month.setMonth(month.getMonth() + offset);
+    return month.toISOString().slice(0, 10);
   }
 }
