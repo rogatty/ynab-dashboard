@@ -1,3 +1,52 @@
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+.dashboard-wrapper {
+  align-items: center;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  height: 100vh;
+  padding: 20px;
+  width: 100vw;
+}
+
+.dashboard-wrapper > div {
+  margin: 0 20px;
+}
+
+.target-category-chart {
+  flex-grow: 1;
+  position: relative;
+}
+
+.other-categories table,
+.other-categories th,
+.other-categories td {
+  border: 1px solid black;
+}
+
+.other-categories table {
+  border-collapse: collapse;
+}
+
+.other-categories td {
+  padding: 5px;
+}
+
+.other-categories__total {
+  font-weight: bold;
+}
+
 .is-overspent {
   color: red;
+}
+
+circle {
+  transition: stroke-dashoffset 0.35s;
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
 }

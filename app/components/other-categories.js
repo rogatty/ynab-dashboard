@@ -1,6 +1,8 @@
 import Component from '@ember/component';
 import {computed} from '@ember-decorators/object';
+import {classNames} from '@ember-decorators/component';
 
+@classNames('other-categories')
 export default class OtherCategoriesComponent extends Component {
   @computed('model.otherCategories')
   get categories() {

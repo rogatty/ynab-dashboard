@@ -1,8 +1,10 @@
 import Component from '@ember/component';
 import {computed} from '@ember-decorators/object';
 import {readOnly} from '@ember-decorators/object/computed';
+import {classNames} from '@ember-decorators/component';
 
-export default class TargetCategoryComponent extends Component {
+@classNames('target-category-chart')
+export default class TargetCategoryChartComponent extends Component {
   balanceLabel = 'Bilans';
   budgetedLabel = 'Odłożone';
 
@@ -57,7 +59,7 @@ export default class TargetCategoryComponent extends Component {
     const ticks = this.getTicks();
 
     return {
-      responsive: false,
+      responsive: true,
       legend: {
         display: false
       },
@@ -115,14 +117,22 @@ export default class TargetCategoryComponent extends Component {
       budgeted: {
         callback: (value, index, values) => {
           // Remove the first and the last ticks as they're calculated above and ugly
-          return index === 0 || index === values.length - 1 ? null : value;
+          return index === 0 || index === values.length - 1 ? null : value.toLocaleString('pl', {
+            currency: 'PLN',
+            currencyDisplay: 'code',
+            style: 'currency'
+          });
         },
         min: largestMinRatio * budgetedRange,
         max: largestMaxRatio * budgetedRange
       },
       balance: {
         callback: (value) => {
-          return value < 0 || value > (this.category.goal_target / 1000) ? null : value;
+          return value < 0 || value > (this.category.goal_target / 1000) ? null : value.toLocaleString('pl', {
+            currency: 'PLN',
+            currencyDisplay: 'code',
+            style: 'currency'
+          });
         },
         min: largestMinRatio * balanceRange,
         max: largestMaxRatio * balanceRange
