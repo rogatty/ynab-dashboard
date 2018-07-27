@@ -1,6 +1,12 @@
+@import url('https://fonts.googleapis.com/css?family=Lato');
+
 html, body {
   margin: 0;
   padding: 0;
+}
+
+body {
+  font-family: 'Lato', sans-serif;
 }
 
 .dashboard-wrapper {
@@ -16,6 +22,12 @@ html, body {
 
 .dashboard-wrapper > div {
   margin: 0 20px;
+}
+
+.target-category-summary {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .target-category-chart {

@@ -7,7 +7,7 @@ import {computed} from '@ember-decorators/object';
 @classNames('progress-ring')
 export default class ProgressRingComponent extends Component {
   radius = 60;
-  stroke = 4;
+  stroke = 8;
 
   @computed('radius', 'stroke')
   get normalizedRadius() {
