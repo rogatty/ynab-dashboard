@@ -7,10 +7,6 @@ export default class ApplicationRoute extends Route {
   async model() {
     await this.api.loadInitialState();
 
-    return {
-      otherCategories: this.api.otherCategories,
-      targetCategory: this.api.targetCategory,
-      targetCategoryMonths: this.api.targetCategoryMonths
-    }
+    return this.api.model;
   }
 }

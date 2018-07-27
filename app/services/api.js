@@ -13,15 +13,16 @@ export default class ApiService extends Service {
   constructor() {
     super(...arguments);
     this.ynabAPI = new API(this.accessToken);
+    this.model = {};
   }
 
   async loadInitialState() {
     const budgetResponse = await this.ynabAPI.budgets.getBudgetById(this.budgetId);
     const budgetDetail = budgetResponse.data.budget;
 
-    this.targetCategory = budgetDetail.categories.find(category => category.id === this.targetCategoryId);
+    this.model.targetCategory = budgetDetail.categories.find(category => category.id === this.targetCategoryId);
 
-    this.targetCategoryMonths = budgetDetail.months
+    this.model.targetCategoryMonths = budgetDetail.months
       .map((month) => {
         return {
           month: month.month,
@@ -36,9 +37,9 @@ export default class ApiService extends Service {
       });
 
     // First month is the future one
-    this.targetCategoryMonths.shift();
+    this.model.targetCategoryMonths.shift();
 
-    this.otherCategories = budgetDetail.categories.filter(
+    this.model.otherCategories = budgetDetail.categories.filter(
       category => category.id !== this.targetCategoryId &&
         category.activity < 0 &&
         category.category_group_id !== this.creditCardCategoryGroupId &&

@@ -7,8 +7,12 @@
 {{#each categories as |category|}}
   <tr>
     <td>{{category.name}}</td>
-    {{! TODO make it red when overspent }}
-    <td>{{money category.activity}}</td>
+    <td class="{{if category.isOverspent 'is-overspent'}}">
+      {{money category.activity}}
+      {{#if category.isOverspent}}
+        (-{{money category.balance}})
+      {{/if}}
+    </td>
   </tr>
 {{/each}}
 </table>
