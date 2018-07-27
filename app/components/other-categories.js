@@ -1,5 +1,5 @@
 import Component from '@ember/component';
-import {computed, readOnly} from '@ember-decorators/object';
+import {computed} from '@ember-decorators/object';
 
 export default class OtherCategoriesComponent extends Component {
   @computed('model.otherCategories')

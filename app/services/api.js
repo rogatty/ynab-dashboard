@@ -34,10 +34,11 @@ export default class ApiService extends Service {
       .filter((month) => {
         // API returns all months since account creation
         return typeof month.category !== 'undefined' && month.category.balance > 0;
-      });
+      })
+      .reverse();
 
-    // First month is the future one
-    this.model.targetCategoryMonths.shift();
+    // Last month is the future one
+    this.model.targetCategoryMonths.pop();
 
     this.model.otherCategories = budgetDetail.categories.filter(
       category => category.id !== this.targetCategoryId &&

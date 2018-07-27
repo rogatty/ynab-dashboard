@@ -1,12 +1,4 @@
 <h2>Na co zbieramy: {{category.name}}</h2>
 <p>{{money category.balance}} / {{money category.goal_target}} ({{category.goal_percentage_complete}}%)</p>
 
-<h2>Tempo odkładania</h2>
-<table>
-  {{#each months as |month|}}
-    <tr>
-      <td>{{month.month}}</td>
-      <td>{{money month.category.budgeted}}</td>
-    </tr>
-  {{/each}}
-</table>
+{{ember-chart type='bar' data=chartData options=chartOptions width=800}}
