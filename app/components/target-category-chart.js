@@ -180,7 +180,7 @@ export default class TargetCategoryChartComponent extends Component {
   }
 
   getMonthWithOffset(originalMonth, offset) {
-    const month = new Date(originalMonth);
+    const month = new Date(originalMonth.replace(/\?/g, ''));
     month.setMonth(month.getMonth() + offset);
     return month.toISOString().slice(0, 10);
   }
