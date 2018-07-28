@@ -12,6 +12,12 @@ export default class OtherCategoriesComponent extends Component {
     });
   }
 
+  @computed
+  get currentMonth() {
+    const now = new Date();
+    return now.toISOString().slice(0, 7);
+  }
+
   @computed('model.otherCategories')
   get total() {
     return this.model.otherCategories.reduce((currentTotal, category) => currentTotal + category.activity, 0);

@@ -1,4 +1,4 @@
-<h2>Na co wydaliśmy w tym miesiącu</h2>
+<h2>{{currentMonth}}</h2>
 <table>
   <tr class="other-categories__total">
     <td>Łącznie</td>
@@ -9,9 +9,6 @@
     <td>{{category.name}}</td>
     <td class="{{if category.isOverspent 'is-overspent'}}">
       {{money category.activity}}
-      {{#if category.isOverspent}}
-        (-{{money category.balance}})
-      {{/if}}
     </td>
   </tr>
 {{/each}}
