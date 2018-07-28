@@ -1,12 +1,14 @@
 import Route from '@ember/routing/route';
-import { service } from '@ember-decorators/service';
+import {service} from '@ember-decorators/service';
 
 export default class ApplicationRoute extends Route {
-  @service api;
+  @service config;
 
-  async model() {
-    await this.api.loadInitialState();
-
-    return this.api.model;
+  beforeModel() {
+    if (this.config.isSetUp) {
+      this.transitionTo('dashboard');
+    } else {
+      this.transitionTo('setup');
+    }
   }
 }

@@ -1,18 +1,20 @@
 import {API} from 'ynab';
 
 import Service from '@ember/service';
-
+import {service} from '@ember-decorators/service';
 import config from 'ynab-dashboard/config/environment';
 
 export default class ApiService extends Service {
-  accessToken = config.APP.ACCESS_TOKEN;
+  // TODO Make them all configurable on /setup route
   budgetId = config.APP.BUDGET_ID;
   targetCategoryId = config.APP.TARGET_CATEGORY_ID;
   creditCardCategoryGroupId = config.APP.CREDIT_CARD_CATEGORY_GROUP_ID;
 
+  @service config;
+
   constructor() {
     super(...arguments);
-    this.ynabAPI = new API(this.accessToken);
+    this.ynabAPI = new API(this.config.accessToken);
     this.model = {};
   }
 
