@@ -12,10 +12,9 @@ export default class TargetCategoryChartComponent extends Component {
 
   @computed('model.targetCategoryMonths')
   get months() {
-    const months = this.model.targetCategoryMonths;
+    let months = this.model.targetCategoryMonths;
 
-    // Last month is a future one
-    months.pop();
+    months = this.removeFutureMonths(months);
     this.addMonthBeforeTheFirst(months);
     this.addForecast(months);
 
@@ -138,6 +137,15 @@ export default class TargetCategoryChartComponent extends Component {
         max: largestMaxRatio * balanceRange
       }
     };
+  }
+
+  removeFutureMonths(months) {
+    return months.filter((month) => {
+      const now = new Date();
+      const monthDate = new Date(month.month);
+
+      return monthDate <= now;
+    });
   }
 
   addMonthBeforeTheFirst(months) {
