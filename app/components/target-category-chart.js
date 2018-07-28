@@ -15,6 +15,7 @@ export default class TargetCategoryChartComponent extends Component {
     let months = this.model.targetCategoryMonths;
 
     months = this.removeFutureMonths(months);
+    months = this.removeDays(months);
     this.addMonthBeforeTheFirst(months);
     this.addForecast(months);
 
@@ -148,6 +149,13 @@ export default class TargetCategoryChartComponent extends Component {
     });
   }
 
+  removeDays(months) {
+    return months.map((month) => {
+      month.month = month.month.slice(0, 7);
+      return month;
+    });
+  }
+
   addMonthBeforeTheFirst(months) {
     const monthBeforeTheFirst = this.getMonthWithOffset(months[0].month, -1);
 
@@ -173,7 +181,7 @@ export default class TargetCategoryChartComponent extends Component {
 
     while (balance < this.category.goal_target) {
       const forecastedMonth = {
-        month: `?${this.getMonthWithOffset(lastMonth.month, 1)}?`,
+        month: `?${this.getMonthWithOffset(lastMonth.month, 1)}`,
         category: {
           activity: 0,
           balance: lastMonth.category.balance + forecastPerMonth,
@@ -188,8 +196,10 @@ export default class TargetCategoryChartComponent extends Component {
   }
 
   getMonthWithOffset(originalMonth, offset) {
-    const month = new Date(originalMonth.replace(/\?/g, ''));
+    const month = new Date(originalMonth.replace('?', ''));
     month.setMonth(month.getMonth() + offset);
-    return month.toISOString().slice(0, 10);
+    // Hacky fix for inconsistent timezones which caused bad dates to show
+    month.setHours(12);
+    return month.toISOString().slice(0, 7);
   }
 }
