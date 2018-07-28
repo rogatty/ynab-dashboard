@@ -1,4 +1,5 @@
 import Component from '@ember/component';
+import {htmlSafe} from '@ember/string';
 import {classNames} from '@ember-decorators/component';
 import {computed} from '@ember-decorators/object';
 
@@ -25,7 +26,8 @@ export default class ProgressRingComponent extends Component {
   }
 
   @computed('circumference', 'progress')
-  get offset() {
-    return this.circumference - (this.progress / 100 * this.circumference);
+  get style() {
+    const offset = this.circumference - (this.progress / 100 * this.circumference);
+    return htmlSafe(`stroke-dashoffset: ${offset}`);
   }
 }
