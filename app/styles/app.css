@@ -10,6 +10,7 @@ body {
   font-family: 'Lato', sans-serif;
 }
 
+.dashboard-loading,
 .dashboard-wrapper {
   align-items: center;
   box-sizing: border-box;
@@ -19,6 +20,11 @@ body {
   height: 100vh;
   padding: 20px;
   width: 100vw;
+}
+
+.dashboard-loading svg {
+  height: 200px;
+  width: 200px;
 }
 
 .dashboard-wrapper > div {
