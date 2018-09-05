@@ -7,6 +7,7 @@ import {classNames} from '@ember-decorators/component';
 export default class TargetCategoryChartComponent extends Component {
   balanceLabel = 'Bilans';
   budgetedLabel = 'Odłożone';
+  monthsToConsiderForForecast = 7;
 
   @readOnly('model.targetCategory') category;
 
@@ -172,8 +173,11 @@ export default class TargetCategoryChartComponent extends Component {
   addForecast(months) {
     const forecastPerMonth = Math.floor(
       months
-        .slice(-3)
-        .reduce((sum, currentMonth) => (currentMonth.category.budgeted + currentMonth.category.activity) + sum, 0) / 3
+        .slice(-1 * this.monthsToConsiderForForecast)
+        .reduce(
+          (sum, currentMonth) => (currentMonth.category.budgeted + currentMonth.category.activity) + sum,
+          0
+        ) / this.monthsToConsiderForForecast
     );
 
     let lastMonth = months.slice(-1)[0];
